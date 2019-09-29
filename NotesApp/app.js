@@ -1,5 +1,3 @@
-const notes = require('./notes')
+const chalk = require('chalk');
 
-console.log(notes())
-
-// fs.appendFileSync(fname, '\nThis is appended to the file: '+ fname +'\n')
+console.log(chalk.green('Success!'))
