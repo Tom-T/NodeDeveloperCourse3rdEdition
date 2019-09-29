@@ -1,5 +1,5 @@
 const fs = require('fs')
+const fname = 'notes.txt'
+fs.writeFileSync(fname, 'This file was created by Node.js')
 
-fs.writeFileSync('notes.txt', 'This file was created by Node.js')
-
-fs.appendFileSync('notes.txt', '\nThis is appended to the file.\n')
+fs.appendFileSync(fname, '\nThis is appended to the file: '+ fname +'\n')

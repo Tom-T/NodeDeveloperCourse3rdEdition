@@ -1,2 +1,2 @@
 This file was created by Node.js
-This appended the file.
+This is appended to the file: notes.txt
