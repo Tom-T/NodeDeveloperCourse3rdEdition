@@ -1,5 +1,5 @@
-const fs = require('fs')
-const fname = 'notes.txt'
-fs.writeFileSync(fname, 'This file was created by Node.js')
+const notes = require('./notes')
 
-fs.appendFileSync(fname, '\nThis is appended to the file: '+ fname +'\n')
+console.log(notes())
+
+// fs.appendFileSync(fname, '\nThis is appended to the file: '+ fname +'\n')
