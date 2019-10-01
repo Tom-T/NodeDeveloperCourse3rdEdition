@@ -7,9 +7,7 @@ const getNotes = () => {
 
 const removeNote = (title) => {
   const notes = loadNotes()
-  const newNotes = notes.filter((note) => {
-    return note.title !== title
-  })
+  const newNotes = notes.filter((note) => note.title !== title)
 
   //Because we can't compare the actual objects to eachother we will see if the lengths differ.
   if (newNotes.length === notes.length){
@@ -22,9 +20,7 @@ const removeNote = (title) => {
 
 const addNote = (title, body) => {
   const notes = loadNotes()
-  const duplicateNotes = notes.filter((note) => {
-    return note.title === title
-  })
+  const duplicateNotes = notes.filter((note) => note.title === title)
   if (duplicateNotes.length === 0){
     notes.push({
       title: title,
@@ -32,7 +28,7 @@ const addNote = (title, body) => {
     })
     console.log(chalk.green(title + " added."));
   saveNotes(notes)
-  } else { console.log(chalk.red.bold(title + " previously recorded.")}
+  } else { console.log(chalk.red.bold(title + " previously recorded."))}
 };
 
 const saveNotes = (notes) => {
