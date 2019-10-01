@@ -1,4 +1,5 @@
 const fs = require('fs')
+const chalk = require('chalk');
 
 const getNotes = () => {
   return "Your Notes...";
@@ -12,10 +13,10 @@ const removeNote = (title) => {
 
   //Because we can't compare the actual objects to eachother we will see if the lengths differ.
   if (newNotes.length === notes.length){
-    console.log("Nothing removed")
+    console.log(chalk.red.bold(title + " was not found!"));
   } else {
-    console.log("Removed note: " + title)
     saveNotes(newNotes)
+    console.log(chalk.green(title + " removed."));
   }
 }
 
@@ -29,9 +30,9 @@ const addNote = (title, body) => {
       title: title,
       body: body
     })
-    console.log("New note added")
+    console.log(chalk.green(title + " added."));
   saveNotes(notes)
-  }else { console.log("Note title taken")}
+  } else { console.log(chalk.red.bold(title + " previously recorded.")}
 };
 
 const saveNotes = (notes) => {
