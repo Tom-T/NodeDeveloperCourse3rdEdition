@@ -29,7 +29,7 @@ yargs.command({
       type: 'string'
     },
     body: {
-      describe: "Note title",
+      describe: "Note text/body",
       demandOption: true,
       type: 'string'
     }
@@ -60,7 +60,7 @@ yargs.command({
 yargs.command({
   command: "read",
   aliases: "r",
-  description: "Read a new Note",
+  description: "Read a Note",
   handler: function () {
     console.log("read")
   }
