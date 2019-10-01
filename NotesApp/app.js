@@ -17,7 +17,6 @@ const yargs = require('yargs')
 // }
 
 
-
 yargs.command({
   command: "add",
   aliases: "a",
@@ -35,16 +34,23 @@ yargs.command({
     }
   },
   handler: function (arg) {
-    console.log("Adding a note. \n  Title:", arg.title, "\n  Body: ", arg.body)
+    notes.addNote(arg.title, arg.body)
   }
 })
 
 yargs.command({
   command: "delete",
   aliases: ["d", "del"],
+  builder: {
+    title: {
+      describe: "Note title",
+      demandOption: true,
+      type: 'string'
+    }
+  },
   description: "Delete a Note",
-  handler: function () {
-    console.log("Removing a note")
+  handler: function (arg) {
+    notes.removeNote(arg.title)
   }
 })
 
