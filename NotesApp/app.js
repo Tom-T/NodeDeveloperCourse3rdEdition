@@ -59,7 +59,7 @@ yargs.command({
   aliases: "l",
   description: "List a new Note",
   handler (arg) {
-    console.log("list" + arg)
+    notes.listNotes()
   }
 })
 
