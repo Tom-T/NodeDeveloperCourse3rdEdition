@@ -45,7 +45,7 @@ const locationUrl =
 
 request({ url: locationUrl, json: true }, (error, response) => {
   if (error) {
-    console.log(chalk.red("Unable to connect to weather service!"));
+    console.log(chalk.red("Unable to connect to location services!"));
   } else if (response.body.features.length) {
     console.log(
       "City: "+
