@@ -10,7 +10,7 @@ const forecast = (long, lat, callback) => {
     "?units=us";
 
   request(
-    { url: url, json: true },
+    { url, json: true },
     (
       error,
       {
