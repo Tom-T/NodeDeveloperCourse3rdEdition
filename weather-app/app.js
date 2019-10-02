@@ -57,22 +57,32 @@ const url =
 //   }
 // });
 
-const getCordinates = (address, callback) => {
+const geocode = (address, callback) => {
   const url =
     "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
-    address +
+    encodeURIComponent(address) +
     ".json?access_token=pk.eyJ1IjoidHRpamVyaW5hIiwiYSI6ImNrMTljODRkbzA5ZzEzZG50OWpqZzRiZWMifQ.2AlOEN_CcB0rKyuGb9NTaw&limit=1";
 
   request({ url: url, json: true }, (error, response) => {
     if (error) {
-      console.log(chalk.red("Unable to connect to location services!"));
+      callback("Unable to connect to location services!");
     } else if (response.body.features.length) {
-      callback(response.body.features[0].center);
+      callback(undefined, {
+        location: response.body.features[0].place_name,
+        geo: response.body.features[0].center
+      });
     } else {
-      console.log(chalk.red("Address not found!"));
+      callback("Address not found!");
     }
   });
 };
 
-getCordinates("Tampa, FL", (data) => console.log("Tampa Data: " + data[0] + " and " + data[1]));
-getCordinates("St Petersburg Russia", data => console.log("St Petersburg Russia Data: " + data[0] + " and " + data[1]));
+
+
+geocode("Tampa", (error, data) => {
+  if (error) {
+    console.log(chalk.red(error));
+  } else {
+    console.log(data.location + "\n\t" + data.geo[0] + " and " + data.geo[1]);
+  }
+});
