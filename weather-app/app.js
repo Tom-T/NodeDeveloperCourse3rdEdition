@@ -36,8 +36,8 @@ request({ url: locationUrl, json: true }, (error, response) => {
 
   console.log(
     "Lat: " +
-      response.body.features[0].center[0] +
+      response.body.features[0].center[1] +
       "\nLon: " +
-      response.body.features[0].center[1]
+      response.body.features[0].center[0]
   );
 });
