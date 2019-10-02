@@ -69,7 +69,8 @@ const geocode = (address, callback) => {
     } else if (response.body.features.length) {
       callback(undefined, {
         location: response.body.features[0].place_name,
-        geo: response.body.features[0].center
+        latitude: response.body.features[0].center[1],
+        longitude: response.body.features[0].center[0]
       });
     } else {
       callback("Address not found!");
@@ -83,6 +84,8 @@ geocode("Tampa", (error, data) => {
   if (error) {
     console.log(chalk.red(error));
   } else {
-    console.log(data.location + "\n\t" + data.geo[0] + " and " + data.geo[1]);
+    console.log(
+      data.location + "\n\t Lat:" + data.latitude + " and Long:" + data.longitude
+    );
   }
 });
