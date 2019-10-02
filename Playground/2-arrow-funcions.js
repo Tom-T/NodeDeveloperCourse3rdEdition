@@ -10,10 +10,12 @@
 const event = {
   name: "Penguin Party",
   guestList: ["One", "Two", "Three"],
-  printGuestList () {
-    console.log("Guest list for " + this.name)
-    this.guestList.forEach((guest) => console.log(guest + "is going to " + this.name))
+  printGuestList() {
+    console.log("Guest list for " + this.name);
+    this.guestList.forEach(guest =>
+      console.log(guest + "is going to " + this.name)
+    );
   }
-}
+};
 
-event.printGuestList()
+event.printGuestList();

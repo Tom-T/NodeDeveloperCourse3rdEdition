@@ -1,6 +1,6 @@
-const notes = require('./notes')
-const chalk = require('chalk')
-const yargs = require('yargs') 
+const notes = require("./notes");
+const chalk = require("chalk");
+const yargs = require("yargs");
 
 // console.log(notes())
 // console.log(chalk.green.bold.inverse.dim('Success!'))
@@ -16,7 +16,6 @@ const yargs = require('yargs')
 //   console.log("Removing Note")
 // }
 
-
 yargs.command({
   command: "add",
   aliases: "a",
@@ -25,18 +24,18 @@ yargs.command({
     title: {
       describe: "Note title",
       demandOption: true,
-      type: 'string'
+      type: "string"
     },
     body: {
       describe: "Note text/body",
       demandOption: true,
-      type: 'string'
+      type: "string"
     }
   },
-  handler (arg) {
-    notes.addNote(arg.title, arg.body)
+  handler(arg) {
+    notes.addNote(arg.title, arg.body);
   }
-})
+});
 
 yargs.command({
   command: "delete",
@@ -45,23 +44,23 @@ yargs.command({
     title: {
       describe: "Note title",
       demandOption: true,
-      type: 'string'
+      type: "string"
     }
   },
   description: "Delete a Note",
-  handler (arg) {
-    notes.removeNote(arg.title)
+  handler(arg) {
+    notes.removeNote(arg.title);
   }
-})
+});
 
 yargs.command({
   command: "list",
   aliases: "l",
   description: "List a new Note",
-  handler (arg) {
-    notes.listNotes()
+  handler(arg) {
+    notes.listNotes();
   }
-})
+});
 
 yargs.command({
   command: "read",
@@ -71,14 +70,15 @@ yargs.command({
     title: {
       describe: "Note title",
       demandOption: true,
-      type: 'string'
+      type: "string"
     }
   },
-  handler(arg) {notes.readNote(arg.title)}
-})
+  handler(arg) {
+    notes.readNote(arg.title);
+  }
+});
 
-yargs.parse()
+yargs.parse();
 
 //console.log(yargs.argv)
 // console.log(yargs.argv.title)
-
