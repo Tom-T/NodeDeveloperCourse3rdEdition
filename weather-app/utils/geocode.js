@@ -6,19 +6,34 @@ const geocode = (address, callback) => {
     encodeURIComponent(address) +
     ".json?access_token=pk.eyJ1IjoidHRpamVyaW5hIiwiYSI6ImNrMTljODRkbzA5ZzEzZG50OWpqZzRiZWMifQ.2AlOEN_CcB0rKyuGb9NTaw&limit=1";
 
-  request({ url: url, json: true }, (error, response) => {
-    if (error) {
-      callback("Unable to connect to location services!");
-    } else if (response.body.features.length) {
-      callback(undefined, {
-        location: response.body.features[0].place_name,
-        latitude: response.body.features[0].center[1],
-        longitude: response.body.features[0].center[0]
-      });
-    } else {
-      callback("Address not found!");
+  request(
+    { url, json: true },
+    (
+      error,
+      {
+        body: {
+          features: {
+            0: {
+              place_name: location,
+              center: { 1: latitude, 0: longitude }
+            }
+          }
+        }
+      }
+    ) => {
+      if (error) {
+        callback("Unable to connect to location services!");
+      } else if (location.length) {
+        callback(undefined, {
+          location,
+          latitude,
+          longitude
+        });
+      } else {
+        callback("Address not found!");
+      }
     }
-  });
+  );
 };
 
-module.exports = geocode
+module.exports = geocode;

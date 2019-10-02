@@ -2,51 +2,18 @@ const chalk = require("chalk");
 const geocode = require("./utils/geocode");
 const forecast = require("./utils/forecast");
 
-// geocode("Tampa", (error, data) => {
-//   if (error) {
-//     return console.log(chalk.red(error));
-//   }
-
-//   forecast(data.longitude, data.latitude, (error, forecastdata) => {
-//     if (error) {
-//       return console.log(chalk.red(error));
-//     }
-//     console.log("Location name: ", data.location);
-//     console.log("Data", forecastdata);
-//   });
-// });
-
-// if (process.argv.length > 2) {
-//   // console.log(process.argv.splice(2).toString());
-//   geocode(process.argv.splice(2), (error, data) => {
-//     if (error) {
-//       return console.log(chalk.red(error));
-//     }
-
-//     forecast(data.longitude, data.latitude, (error, forecastdata) => {
-//       if (error) {
-//         return console.log(chalk.red(error));
-//       }
-//       console.log("Location name: ", data.location);
-//       console.log("Data", forecastdata);
-//     });
-//   });
-// } else {
-//   console.log("Please provide a location!")
-// }
-
 if (process.argv.length > 2) {
   process.argv.splice(2).forEach(location => {
-    geocode(location, (error, data) => {
+    geocode(location, (error, {longitude, latitude, location}) => {
       if (error) {
         return console.log(chalk.red(error));
       }
 
-      forecast(data.longitude, data.latitude, (error, forecastdata) => {
+      forecast(longitude, latitude, (error, forecastdata) => {
         if (error) {
           return console.log(chalk.red(error));
         }
-        console.log("Location name: ", data.location);
+        console.log("Location name: ", location);
         console.log("Data", forecastdata);
       });
     });
