@@ -7,9 +7,6 @@ const url =
 // const locationUrl =
 //   "https://api.mapbox.com/geocoding/v5/mapbox.places/Los%20Angeles.json?access_token=pk.eyJ1IjoidHRpamVyaW5hIiwiYSI6ImNrMTljODRkbzA5ZzEzZG50OWpqZzRiZWMifQ.2AlOEN_CcB0rKyuGb9NTaw&limit=1";
 
-const locationUrl =
-    "https://api.mapbox.com/geocoding/v5/mapbox.places/Tampa.json?access_token=pk.eyJ1IjoidHRpamVyaW5hIiwiYSI6ImNrMTljODRkbzA5ZzEzZG50OWpqZzRiZWMifQ.2AlOEN_CcB0rKyuGb9NTaw&limit=1";
-
 // request({ url: url, json: true }, (error, response) => {
 //   if (error) {
 //     console.log(chalk.red("Unable to connect to weather service!"));
@@ -43,19 +40,39 @@ const locationUrl =
 //   }
 // });
 
-request({ url: locationUrl, json: true }, (error, response) => {
-  if (error) {
-    console.log(chalk.red("Unable to connect to location services!"));
-  } else if (response.body.features.length) {
-    console.log(
-      "City: "+
-      response.body.features[0].place_name + 
-      " \n\tLat: " +
-        response.body.features[0].center[1] +
-        "\n\tLon: " +
-        response.body.features[0].center[0]
-    );
-  } else {
-    console.log(chalk.red("Address not found!"));
-  }
-});
+// request({ url: locationUrl, json: true }, (error, response) => {
+//   if (error) {
+//     console.log(chalk.red("Unable to connect to location services!"));
+//   } else if (response.body.features.length) {
+//     console.log(
+//       "City: "+
+//       response.body.features[0].place_name +
+//       " \n\tLat: " +
+//         response.body.features[0].center[1] +
+//         "\n\tLon: " +
+//         response.body.features[0].center[0]
+//     );
+//   } else {
+//     console.log(chalk.red("Address not found!"));
+//   }
+// });
+
+const getCordinates = (address, callback) => {
+  const url =
+    "https://api.mapbox.com/geocoding/v5/mapbox.places/" +
+    address +
+    ".json?access_token=pk.eyJ1IjoidHRpamVyaW5hIiwiYSI6ImNrMTljODRkbzA5ZzEzZG50OWpqZzRiZWMifQ.2AlOEN_CcB0rKyuGb9NTaw&limit=1";
+
+  request({ url: url, json: true }, (error, response) => {
+    if (error) {
+      console.log(chalk.red("Unable to connect to location services!"));
+    } else if (response.body.features.length) {
+      callback(response.body.features[0].center);
+    } else {
+      console.log(chalk.red("Address not found!"));
+    }
+  });
+};
+
+getCordinates("Tampa, FL", (data) => console.log("Tampa Data: " + data[0] + " and " + data[1]));
+getCordinates("St Petersburg Russia", data => console.log("St Petersburg Russia Data: " + data[0] + " and " + data[1]));
