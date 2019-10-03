@@ -2,14 +2,19 @@
   "dependencies": {
     "express": "^4.17.1",
     "hbs": "^4.0.5",
-    "request": "2.88.0"
+    "request": "2.88.0",
+    "speak-tts": "^2.0.8"
   },
   "name": "web-server",
   "version": "1.0.0",
   "main": "index.js",
-  "devDependencies": {},
+  "devDependencies": {
+    "webpack": "^4.41.0",
+    "webpack-cli": "^3.3.9"
+  },
   "scripts": {
-    "start":  "node src/app.js"
+    "start": "webpack --config webpack.config.js && node src/app.js", 
+    "run": "node src/app.js"
   },
   "keywords": [],
   "author": "",
