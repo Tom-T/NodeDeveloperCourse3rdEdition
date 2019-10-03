@@ -6,7 +6,6 @@ const messageOne = document.querySelector("#message-1");
 const messageTwo = document.querySelector("#message-2");
 const speachButton = document.querySelector("#speak");
 
-
 //for speach
 const speech = new Speech(); // will throw an exception if not browser supported
 
@@ -24,12 +23,12 @@ speech.init({
   }
 });
 
-//speachButton.style.display = "none";
+speachButton.style.display = "none";
 weatherForm.addEventListener("submit", e => {
   e.preventDefault();
   messageOne.textContent = "Loading...";
   messageTwo.textContent = "";
-  //speachButton.style.display = "none";
+  speachButton.style.display = "none";
   fetch("/weather?address=" + search.value).then(response => {
     response.json().then(data => {
       if (data.error) {
@@ -43,12 +42,25 @@ weatherForm.addEventListener("submit", e => {
   });
 });
 
-
 speachButton.addEventListener("click", e => {
   e.preventDefault();
   speech
     .speak({
-      text: messageTwo.textContent
+      text:
+        "In " +
+        messageOne.textContent.substring(
+          0,
+          messageOne.textContent.indexOf(",")
+        ) +
+        " " +
+        messageTwo.textContent.substring(
+          0,
+          messageTwo.textContent.indexOf(".")
+        ) +
+        " point " +
+        messageTwo.textContent.substring(
+          messageTwo.textContent.indexOf(".") + 1
+        )
     })
     .then(() => {
       console.log("Success !");
