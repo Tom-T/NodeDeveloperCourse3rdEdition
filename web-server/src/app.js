@@ -30,6 +30,12 @@ app.get("/help", (req, res) => {
     name: "Tom"
   });
 });
+app.get("/help/*", (req, res) => {
+    res.render("404", {
+      message: "Help article not found",
+      name: "Tom"
+    });
+});
 app.get("/about", (req, res) => {
   res.render("about", {
     title: "About Page",
@@ -40,6 +46,12 @@ app.get("/weather", (req, res) => {
   res.send({
     forecast: "40",
     location: "Tampa"
+  });
+});
+app.get("*", (req, res) => {
+  res.render("404", {
+    message: "Page not found.",
+    name: "Tom"
   });
 });
 
