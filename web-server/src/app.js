@@ -46,11 +46,10 @@ app.get("/weather", (req, res) => {
   if (!req.query.address) {
     return res.send({ error: "Address must be provided." });
   }
-  const address = req.query.address
   res.send({
     forecast: "40",
     location: "Tampa",
-    address
+    address: req.query.address
   });
 });
 app.get("/products", (req, res) => {
