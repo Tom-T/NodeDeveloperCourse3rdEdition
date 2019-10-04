@@ -13,26 +13,19 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
   }
   const db = client.db(databaseName);
 
-  // db.collection("users").findOne({ _id: new ObjectID("5d973995ddd12c2bc79c2dc9") }, (error, user) => {
-  //   if (error) {
-  //     return console.log("unable to fetch");
-  //   }
-
-  //   console.log(user);
-  // });
-
-  db.collection("tasks").findOne({}, { sort: [["_id", "desc"]], limit: 1 }, (error, task) => {
-    if (error) {
-      return console.log("unable to fetch");
-    }
-    console.log(task);
-  });
-  console.log("Unfinished tasks:");
   db.collection("tasks")
-    .find({ completed: false })
-    .toArray((error, tasks) => {
-      tasks.forEach(task => {
-        console.log(task);
-      });
+    .updateMany(
+      {},
+      {
+        $set: {
+          completed: true
+        }
+      }
+    )
+    .then(result => {
+      console.log(result);
+    })
+    .catch(error => {
+      console.log(error);
     });
 });
