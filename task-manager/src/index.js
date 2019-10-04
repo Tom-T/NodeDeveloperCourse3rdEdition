@@ -14,7 +14,6 @@ app.post("/tasks", (req, res) => {
     .save()
     .then(() => {
       res.send(task);
-      console.log("Record saved");
     })
     .catch(e => {
       res.status(400).send(e);
@@ -27,7 +26,6 @@ app.post("/users", (req, res) => {
     .save()
     .then(() => {
       res.send(user);
-      console.log("Record saved");
     })
     .catch(e => {
       res.status(400).send(e);
