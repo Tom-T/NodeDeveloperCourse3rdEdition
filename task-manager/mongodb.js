@@ -1,8 +1,16 @@
-const mongodb = require("mongodb");
-const MongoClient = mongodb.MongoClient;
+// const mongodb = require("mongodb");
+// const MongoClient = mongodb.MongoClient;
+// const ObjectID = mongodb.ObjectID
+
+const {MongoClient, ObjectID} = require("mongodb");
+
 
 const connectionURL = "mongodb://127.0.0.1:27017";
 const databaseName = "task-manager";
+
+const id = new ObjectID()
+console.log(id)
+console.log(id.getTimestamp());
 
 MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) => {
   if (error) {
@@ -44,30 +52,34 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
   //   }
   // );
 
-  db.collection("tasks").insertMany(
-    [
-      {
-        description: "This is the first completed task.",
-        completed: true
-      },
-      {
-        description: "This is the second task.",
-        completed: false
-      },
-      {
-        description: "This another task.",
-        completed: false
-      },
-      {
-        description: "This finished task.",
-        completed: true
-      }
-    ],
-    (error, ops) => {
-      if (error) {
-        return console.log("Error whlie accessing the DB:\n", error);
-      }
-      console.log("Database updated without issues!\n", ops);
-    }
-  );
+  // db.collection("tasks").insertMany(
+  //   [
+  //     {
+  //       description: "This is the first completed task.",
+  //       completed: true
+  //     },
+  //     {
+  //       description: "This is the second task.",
+  //       completed: false
+  //     },
+  //     {
+  //       description: "This another task.",
+  //       completed: false
+  //     },
+  //     {
+  //       description: "This finished task.",
+  //       completed: true
+  //     }
+  //   ],
+  //   (error, ops) => {
+  //     if (error) {
+  //       return console.log("Error whlie accessing the DB:\n", error);
+  //     }
+  //     console.log("Database updated without issues!\n", ops);
+  //   }
+  // );
+
+
+
+
 });
