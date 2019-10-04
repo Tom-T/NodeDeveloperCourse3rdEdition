@@ -25,14 +25,12 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
   //   .catch(error => {
   //     console.log(error);
   //   });
-   db.collection("users")
-     .deleteOne(
-       {name: "Mike"}
-     )
-     .then(result => {
-       console.log(result);
-     })
-     .catch(error => {
-       console.log(error);
-     });
+  db.collection("tasks")
+    .deleteOne({ description: "This is the first completed task." })
+    .then(result => {
+      console.log(result);
+    })
+    .catch(error => {
+      console.log(error);
+    });
 });
