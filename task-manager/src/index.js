@@ -121,7 +121,6 @@ app.delete("/tasks/:id", async (req, res) => {
     }
     res.status(202).send(task);
   } catch (e) {
-    console.log(e)
     res.status(500).send();
   }
 });
