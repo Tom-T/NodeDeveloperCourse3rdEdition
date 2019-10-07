@@ -55,6 +55,17 @@ app.patch("/users/:id", async (req, res) => {
     res.status(500).send();
   }
 });
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).send();
+    }
+    res.status(202).send(user);
+  } catch (e) {
+    res.status(500).send();
+  }
+});
 app.post("/tasks", async (req, res) => {
   try {
     const task = await new Task(req.body);
@@ -85,7 +96,7 @@ app.get("/tasks/:id", async (req, res) => {
   }
 });
 app.patch("/tasks/:id", async (req, res) => {
-  const allowedProperties = ["completed"];
+  const allowedProperties = ["description", "completed"];
   const changedProperties = Object.keys(req.body);
   const isValidProperties = changedProperties.every(property => allowedProperties.includes(property));
 
