@@ -28,11 +28,7 @@ router.get("/tasks", auth, async (req, res) => {
   if (req.query.sort) {
     const splitSort = req.query.sort.split("_");
     var sort = {};
-    if (splitSort[1] === "desc") {
-      sort[splitSort[0]] = -1;
-    } else {
-      sort[splitSort[0]] = 1;
-    }
+    sort[splitSort[0]] = splitSort[1] === "desc" ? -1 : 1;
   }
   try {
     await req.user
