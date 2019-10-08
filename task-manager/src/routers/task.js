@@ -40,9 +40,9 @@ router.patch("/tasks/:id", async (req, res) => {
     return res.status(500).send({ error: "Invalid Propertie(s)" });
   }
   try {
-    const task = await Task.findById(req.params.id)
-    changedProperties.forEach(property => task[property] = req.body[property])
-    await task.save()
+    const task = await Task.findById(req.params.id);
+    changedProperties.forEach(property => (task[property] = req.body[property]));
+    await task.save();
 
     if (!task) {
       return res.status(404).send();
