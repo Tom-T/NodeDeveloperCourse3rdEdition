@@ -1,4 +1,5 @@
 const express = require("express");
+const multer = require("multer");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 const router = new express.Router();
@@ -75,5 +76,24 @@ router.delete("/users/me", auth, async (req, res) => {
     res.status(500).send();
   }
 });
+var storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage
+});
+router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
+  try {
+    req.user.avatar = req.file.buffer;
 
+    await req.user.save();
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send();
+  }
+});
+router.get("/users/me/avatar", auth, async (req, res) => {
+  try {
+    res.set("Content-Type", "image/jpeg");
+    res.send(req.user.avatar);
+  } catch (e) {}
+});
 module.exports = router;
