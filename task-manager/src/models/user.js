@@ -42,31 +42,37 @@ const userSchema = new mongoose.Schema({
       }
     }
   },
-  tokens: [{
-    token: {
-      type: String,
-      required: true
+  tokens: [
+    {
+      token: {
+        type: String,
+        required: true
+      }
     }
-  }]
+  ]
 });
-
+userSchema.virtual("tasks", {
+  ref: "Task",
+  localField: "_id",
+  foreignField: "owner"
+});
 userSchema.methods.generateAuthToken = async function() {
   const user = this;
 
   const token = jwt.sign({ _id: user._id.toString() }, "ThisIsAToken");
-  user.tokens.push({token});
-  await user.save()
+  user.tokens.push({ token });
+  await user.save();
   return token;
 };
-userSchema.methods.toJSON = function () {
-  const user = this
-  const userObject = user.toObject()
+userSchema.methods.toJSON = function() {
+  const user = this;
+  const userObject = user.toObject();
 
-  delete userObject.password
-  delete userObject.tokens
+  delete userObject.password;
+  delete userObject.tokens;
 
-  return userObject
-}
+  return userObject;
+};
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email });
 
