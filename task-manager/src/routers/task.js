@@ -17,22 +17,35 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 // GET /tasks?completed=true
-//GET /tasks?limit=10&skip=10
+// GET /tasks?limit=10&skip=10
+// GET /tasks?sort=createdAt_asc  (or desc)
 router.get("/tasks", auth, async (req, res) => {
-  const match = {}
+  const match = {};
 
-  if (req.query.completed){
-    match.completed = req.query.completed === "true"
+  if (req.query.completed) {
+    match.completed = req.query.completed === "true";
+  }
+  if (req.query.sort) {
+    const splitSort = req.query.sort.split("_");
+    var sort = {};
+    if (splitSort[1] === "desc") {
+      sort[splitSort[0]] = -1;
+    } else {
+      sort[splitSort[0]] = 1;
+    }
   }
   try {
-    await req.user.populate({
-      path: "tasks",
-      match,
-      options: {
-        limit: parseInt(req.query.limit),
-        skip: parseInt(req.query.skip)
-      }
-    }).execPopulate()
+    await req.user
+      .populate({
+        path: "tasks",
+        match,
+        options: {
+          limit: parseInt(req.query.limit),
+          skip: parseInt(req.query.skip),
+          sort
+        }
+      })
+      .execPopulate();
     res.status(200).send(req.user.tasks);
   } catch (e) {
     res.status(404).send();
@@ -74,7 +87,7 @@ router.patch("/tasks/:id", auth, async (req, res) => {
 });
 router.delete("/tasks/:id", auth, async (req, res) => {
   try {
-    const task = await Task.findOneAndDelete({_id: req.params.id, owner: req.user._id});
+    const task = await Task.findOneAndDelete({ _id: req.params.id, owner: req.user._id });
     if (!task) {
       return res.status(404).send();
     }
