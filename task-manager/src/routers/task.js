@@ -37,7 +37,7 @@ router.get("/tasks/:id", auth, async (req, res) => {
     res.status(500).send();
   }
 });
-router.patch("/tasks/:id", async (req, res) => {
+router.patch("/tasks/:id", auth, async (req, res) => {
   const allowedProperties = ["description", "completed"];
   const changedProperties = Object.keys(req.body);
   const isValidProperties = changedProperties.every(property => allowedProperties.includes(property));
@@ -46,21 +46,21 @@ router.patch("/tasks/:id", async (req, res) => {
     return res.status(500).send({ error: "Invalid Propertie(s)" });
   }
   try {
-    const task = await Task.findById(req.params.id);
-    changedProperties.forEach(property => (task[property] = req.body[property]));
-    await task.save();
-
+    const task = await Task.findOne({ _id: req.params.id, owner: req.user._id });
     if (!task) {
       return res.status(404).send();
     }
+
+    changedProperties.forEach(property => (task[property] = req.body[property]));
+    await task.save();
     res.status(200).send(task);
   } catch (e) {
     res.status(500).send(e);
   }
 });
-router.delete("/tasks/:id", async (req, res) => {
+router.delete("/tasks/:id", auth, async (req, res) => {
   try {
-    const task = await Task.findByIdAndDelete(req.params.id);
+    const task = await Task.findByIdAndDelete({_id: req.params.id, owner: req.user._id});
     if (!task) {
       return res.status(404).send();
     }
