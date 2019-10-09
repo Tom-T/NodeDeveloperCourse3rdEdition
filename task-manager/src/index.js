@@ -19,7 +19,9 @@ app.use(express.json());
 
 app.use(userRouter);
 app.use(taskRouter);
-
+app.use((err, req, res, next) => {
+  return res.status(500).send({ error: err.message });
+});
 app.listen(port, () => {
   console.log("Server is up on port ", port);
 });

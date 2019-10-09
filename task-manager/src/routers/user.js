@@ -102,10 +102,11 @@ router.post(
     } catch (e) {
       res.status(500).send();
     }
-  },
-  (error, req, res, next) => {
-    res.status(400).send({ error: error.message });
   }
+  // ,
+  // (error, req, res, next) => {
+  //   res.status(400).send({ error: error.message });
+  // }
 );
 router.get("/users/me/avatar", auth, async (req, res) => {
   try {
