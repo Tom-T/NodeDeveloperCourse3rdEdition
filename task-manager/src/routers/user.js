@@ -89,16 +89,24 @@ const upload = multer({
     return cb(undefined, true);
   }
 });
-router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
-  try {
-    req.user.avatar = req.file.buffer;
+router.post(
+  "/users/me/avatar",
+  auth,
+  upload.single("avatar"),
+  async (req, res) => {
+    try {
+      req.user.avatar = req.file.buffer;
 
-    await req.user.save();
-    res.status(200).send();
-  } catch (e) {
-    res.status(500).send();
+      await req.user.save();
+      res.status(200).send();
+    } catch (e) {
+      res.status(500).send();
+    }
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
   }
-});
+);
 router.get("/users/me/avatar", auth, async (req, res) => {
   try {
     res.set("Content-Type", "image/jpeg");
