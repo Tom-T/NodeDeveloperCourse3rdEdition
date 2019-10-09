@@ -78,7 +78,16 @@ router.delete("/users/me", auth, async (req, res) => {
 });
 var storage = multer.memoryStorage();
 const upload = multer({
-  storage: storage
+  storage: storage,
+  limits: {
+    fileSize: 1000000
+  },
+  fileFilter(req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
+      return cb(new Error("Only PNG, JPG, and JPEG are accepted. "));
+    }
+    return cb(undefined, true);
+  }
 });
 router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
   try {
