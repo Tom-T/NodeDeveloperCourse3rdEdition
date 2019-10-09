@@ -109,13 +109,17 @@ router.delete("/users/me/avatar", auth, async (req, res) => {
     res.status(500).send({ error: e.body });
   }
 });
-router.get("/users/me/avatar", auth, async (req, res) => {
-  if (!req.user.avatar) {
+router.get("/users/:id/avatar", auth, async (req, res) => {
+  let user = req.user;
+  if (req.params.id !== "me") {
+    user = await User.findById(req.params.id);
+  }
+  if (!user.avatar) {
     return res.status(404).send();
   }
   try {
-    res.set("Content-Type", fileType(req.user.avatar).mime);
-    res.send(req.user.avatar);
+    res.set("Content-Type", fileType(user.avatar).mime);
+    res.send(user.avatar);
   } catch (e) {}
 });
 module.exports = router;
