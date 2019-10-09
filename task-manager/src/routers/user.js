@@ -103,11 +103,16 @@ router.post(
       res.status(500).send();
     }
   }
-  // ,
-  // (error, req, res, next) => {
-  //   res.status(400).send({ error: error.message });
-  // }
 );
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  try {
+    req.user.avatar = undefined
+    await req.user.save()
+    res.status(200).send()
+  }catch (e) {
+    res.status(500).send({error: e.body})
+  }
+})
 router.get("/users/me/avatar", auth, async (req, res) => {
   try {
     res.set("Content-Type", "image/jpeg");
