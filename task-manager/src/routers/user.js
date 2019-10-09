@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
+const fileType = require("file-type");
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -89,33 +90,31 @@ const upload = multer({
     return cb(undefined, true);
   }
 });
-router.post(
-  "/users/me/avatar",
-  auth,
-  upload.single("avatar"),
-  async (req, res) => {
-    try {
-      req.user.avatar = req.file.buffer;
+router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
+  try {
+    req.user.avatar = req.file.buffer;
 
-      await req.user.save();
-      res.status(200).send();
-    } catch (e) {
-      res.status(500).send();
-    }
+    await req.user.save();
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send();
   }
-);
+});
 router.delete("/users/me/avatar", auth, async (req, res) => {
   try {
-    req.user.avatar = undefined
-    await req.user.save()
-    res.status(200).send()
-  }catch (e) {
-    res.status(500).send({error: e.body})
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.status(200).send();
+  } catch (e) {
+    res.status(500).send({ error: e.body });
   }
-})
+});
 router.get("/users/me/avatar", auth, async (req, res) => {
+  if (!req.user.avatar) {
+    return res.status(404).send();
+  }
   try {
-    res.set("Content-Type", "image/jpeg");
+    res.set("Content-Type", fileType(req.user.avatar).mime);
     res.send(req.user.avatar);
   } catch (e) {}
 });
