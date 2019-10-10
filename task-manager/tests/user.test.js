@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../src/app");
 const User = require("../src/models/user");
-const { testUser, testUserId, setupDatabase } = require("./fixtures/db");
+const { testUsers, setupDatabase } = require("./fixtures/db");
 
 
 const newUser = {
@@ -39,9 +39,9 @@ test("Should'nt create existing user", async () => {
   await request(app)
     .post("/users")
     .send({
-      name: testUser.name,
-      email: testUser.email,
-      password: testUser.password
+      name: testUsers[0].name,
+      email: testUsers[0].email,
+      password: testUsers[0].password
     })
     .expect(400);
 });
@@ -50,8 +50,8 @@ test("Should login existing user", async () => {
   response = await request(app)
     .post("/users/login")
     .send({
-      email: testUser.email,
-      password: testUser.password
+      email: testUsers[0].email,
+      password: testUsers[0].password
     })
     .expect(200);
 
@@ -73,7 +73,7 @@ test("Shouldn't login unknown user", async () => {
 test("Should get profile for user", async () => {
   await request(app)
     .get("/users/me")
-    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .send()
     .expect(200);
 });
@@ -95,7 +95,7 @@ test("Shouldn't delete profile for unathenticated user", async () => {
 test("Should delete profile for user", async () => {
   response = await request(app)
     .delete("/users/me")
-    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .send()
     .expect(202);
   const user = await User.findById(response.body._id);
@@ -105,27 +105,27 @@ test("Should delete profile for user", async () => {
 test("Should upload avatar image", async () => {
   await request(app)
     .post("/users/me/avatar")
-    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .attach("avatar", "tests/fixtures/profile-pic.jpg")
     .expect(200);
-  const user = await User.findById(testUserId);
+  const user = await User.findById(testUsers[0]._id);
   expect(user.avatar).toEqual(expect.any(Buffer));
 });
 
 test("Should update valid fields", async () => {
   await request(app)
     .patch("/users/me")
-    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .send({ name: "New Name" })
     .expect(200);
-  const user = await User.findById(testUserId);
+  const user = await User.findById(testUsers[0]._id);
   expect(user.name).toBe("New Name");
 });
 
 test("Shouldn't update invalid fields", async () => {
   await request(app)
     .patch("/users/me")
-    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .send({ waffles: "Peanutbutter" })
     .expect(400);
 });
