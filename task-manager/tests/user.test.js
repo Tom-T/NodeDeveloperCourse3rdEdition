@@ -71,7 +71,7 @@ test("Should login existing user", async () => {
 
   const user = await User.findById(response.body.user._id);
   expect(user).not.toBeNull();
-  expect(response.body.token).toMatch(user.tokens[1].token)
+  expect(response.body.token).toBe(user.tokens[1].token);
 });
 
 test("Shouldn't login unknown user", async () => {
@@ -99,7 +99,7 @@ test("Shouldn't get profile for user", async () => {
     .expect(401);
 });
 
-test("Shouldn't delete profile for user", async () => {
+test("Shouldn't delete profile for unathenticated user", async () => {
   await request(app)
     .delete("/users/me")
     .send()
@@ -107,9 +107,11 @@ test("Shouldn't delete profile for user", async () => {
 });
 
 test("Should delete profile for user", async () => {
-  await request(app)
+  response = await request(app)
     .delete("/users/me")
     .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
     .send()
     .expect(202);
+  const user = await User.findById(response.body._id);
+  expect(user).toBeNull();
 });
