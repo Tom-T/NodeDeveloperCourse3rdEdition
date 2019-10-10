@@ -115,3 +115,31 @@ test("Should delete profile for user", async () => {
   const user = await User.findById(response.body._id);
   expect(user).toBeNull();
 });
+
+test("Should upload avatar image", async () => {
+  await request(app)
+    .post("/users/me/avatar")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .attach("avatar", "tests/fixtures/profile-pic.jpg")
+    .expect(200);
+  const user = await User.findById(userOneId);
+  expect(user.avatar).toEqual(expect.any(Buffer));
+});
+
+test("Should update valid fields", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({ name: "New Name" })
+    .expect(200);
+  const user = await User.findById(userOneId);
+  expect(user.name).toBe("New Name");
+});
+
+test("Shouldn't update invalid fields", async () => {
+  await request(app)
+    .patch("/users/me")
+    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .send({ waffles: "Peanutbutter" })
+    .expect(400);
+});
