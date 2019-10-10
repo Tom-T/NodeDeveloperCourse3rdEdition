@@ -16,10 +16,11 @@
     "validator": "^11.1.0"
   },
   "scripts": {
-    "dev": "nodemon src/index.js",
+    "dev": "env-cmd -f ./config/dev.env  nodemon src/index.js",
     "start": "node src/index.js"
   },
   "devDependencies": {
+    "env-cmd": "^10.0.1",
     "nodemon": "^1.19.3"
   }
 }
