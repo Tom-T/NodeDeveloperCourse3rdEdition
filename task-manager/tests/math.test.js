@@ -1,14 +1,17 @@
-test("Hello world", () => {});
+// test("Hello world", () => {});
 
-test("Failure", () => {throw new Error("This failed")})
+// test("Failure", () => {throw new Error("This failed")})
 
 
-const calculateTip = (total, tip) => {
-  return total * (tip+1)
-}
+// const calculateTip = (total, tip) => {
+//   return total * (tip+1)
+// }
 
-test("Should return total plus tip", () => {
-  const total = calculateTip(10, .3)
-  expect(total).toBe(13)
+// test("Should return total plus tip", () => {
+//   const total = calculateTip(10, .3)
+//   expect(total).toBe(13)
 
-})
+// })
+
+
+test("This is a test", () => {})
