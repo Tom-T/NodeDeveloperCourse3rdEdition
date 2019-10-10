@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../src/app");
 const Task = require("../src/models/task");
-const { testUsers, setupDatabase } = require("./fixtures/db");
+const { testUsers, testTasks, setupDatabase } = require("./fixtures/db");
 
 beforeEach(setupDatabase);
 
@@ -22,5 +22,13 @@ test("Get all tasks for user[0]", async () => {
     .set("Authorization", `Bearer ${testUsers[0].tokens[0].token}`)
     .send()
     .expect(200);
-    expect(response.body.length === 2)
+    expect(response.body.length).toEqual(2)
+});
+
+test("user[1] Shouldn't be able to delete task[0] owned by user[0]", async () => {
+  const response = await request(app)
+    .delete(`/tasks/${testTasks[0]._id}`)
+    .set("Authorization", `Bearer ${testUsers[1].tokens[0].token}`)
+    .send()
+    .expect(404);
 });
