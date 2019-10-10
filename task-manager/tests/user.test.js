@@ -1,38 +1,24 @@
 const request = require("supertest");
-const jwt = require("jsonwebtoken");
-const mongoose = require("mongoose");
 const app = require("../src/app");
 const User = require("../src/models/user");
-const userOneId = new mongoose.Types.ObjectId();
-const userOne = {
-  _id: userOneId,
-  name: "User One",
-  email: "email-User_One@example.com",
-  password: "234234234fff",
-  tokens: [
-    {
-      token: jwt.sign({ _id: userOneId }, process.env.JWT_TOKEN)
-    }
-  ]
-};
-const userTwo = {
-  name: "User Two",
-  email: "email-User_Two@example.com",
+const { testUser, testUserId, setupDatabase } = require("./fixtures/db");
+
+
+const newUser = {
+  name: "New User",
+  email: "email-New_User@example.com",
   password: "234234234fff"
 };
 
-beforeEach(async () => {
-  await User.deleteMany();
-  await new User(userOne).save();
-});
+beforeEach(setupDatabase);
 
 test("Should signup a new user", async () => {
   const response = await request(app)
     .post("/users")
     .send({
-      name: userTwo.name,
-      email: userTwo.email,
-      password: userTwo.password
+      name: newUser.name,
+      email: newUser.email,
+      password: newUser.password
     })
     .expect(201);
 
@@ -43,19 +29,19 @@ test("Should signup a new user", async () => {
   //Assertions about the response
   expect(response.body).toMatchObject({
     user: {
-      name: userTwo.name,
-      email: userTwo.email.toLowerCase()
+      name: newUser.name,
+      email: newUser.email.toLowerCase()
     }
   });
-  expect(user.password).not.toBe(userTwo.password);
+  expect(user.password).not.toBe(newUser.password);
 });
 test("Should'nt create existing user", async () => {
   await request(app)
     .post("/users")
     .send({
-      name: userOne.name,
-      email: userOne.email,
-      password: userOne.password
+      name: testUser.name,
+      email: testUser.email,
+      password: testUser.password
     })
     .expect(400);
 });
@@ -64,8 +50,8 @@ test("Should login existing user", async () => {
   response = await request(app)
     .post("/users/login")
     .send({
-      email: userOne.email,
-      password: userOne.password
+      email: testUser.email,
+      password: testUser.password
     })
     .expect(200);
 
@@ -87,7 +73,7 @@ test("Shouldn't login unknown user", async () => {
 test("Should get profile for user", async () => {
   await request(app)
     .get("/users/me")
-    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
     .send()
     .expect(200);
 });
@@ -109,7 +95,7 @@ test("Shouldn't delete profile for unathenticated user", async () => {
 test("Should delete profile for user", async () => {
   response = await request(app)
     .delete("/users/me")
-    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
     .send()
     .expect(202);
   const user = await User.findById(response.body._id);
@@ -119,27 +105,27 @@ test("Should delete profile for user", async () => {
 test("Should upload avatar image", async () => {
   await request(app)
     .post("/users/me/avatar")
-    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
     .attach("avatar", "tests/fixtures/profile-pic.jpg")
     .expect(200);
-  const user = await User.findById(userOneId);
+  const user = await User.findById(testUserId);
   expect(user.avatar).toEqual(expect.any(Buffer));
 });
 
 test("Should update valid fields", async () => {
   await request(app)
     .patch("/users/me")
-    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
     .send({ name: "New Name" })
     .expect(200);
-  const user = await User.findById(userOneId);
+  const user = await User.findById(testUserId);
   expect(user.name).toBe("New Name");
 });
 
 test("Shouldn't update invalid fields", async () => {
   await request(app)
     .patch("/users/me")
-    .set("Authorization", `Bearer ${userOne.tokens[0].token}`)
+    .set("Authorization", `Bearer ${testUser.tokens[0].token}`)
     .send({ waffles: "Peanutbutter" })
     .expect(400);
 });
