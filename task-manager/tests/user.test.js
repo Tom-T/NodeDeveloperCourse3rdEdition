@@ -15,6 +15,11 @@ const userOne = {
     }
   ]
 };
+const userTwo = {
+  name: "User Two",
+  email: "email-User_Two@example.com",
+  password: "234234234fff"
+};
 
 beforeEach(async () => {
   await User.deleteMany();
@@ -22,19 +27,36 @@ beforeEach(async () => {
 });
 
 test("Should signup a new user", async () => {
-  await request(app)
+  const response = await request(app)
     .post("/users")
     .send({
-      name: "Test User",
-      email: "email@example.com",
-      password: "jfjrj4j4j"
+      name: userTwo.name,
+      email: userTwo.email,
+      password: userTwo.password
     })
     .expect(201);
+
+  //Assert that the database was changed correctly
+  const user = await User.findById(response.body.user._id);
+  expect(user).not.toBeNull();
+
+  //Assertions about the response
+  expect(response.body).toMatchObject({
+    user: {
+      name: userTwo.name,
+      email: userTwo.email.toLowerCase()
+    }
+  });
+  expect(user.password).not.toBe(userTwo.password);
 });
 test("Should'nt create existing user", async () => {
   await request(app)
     .post("/users")
-    .send(userOne)
+    .send({
+      name: userOne.name,
+      email: userOne.email,
+      password: userOne.password
+    })
     .expect(400);
 });
 
