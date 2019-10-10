@@ -4,6 +4,7 @@ const sharp = require("sharp");
 const User = require("../models/user");
 const auth = require("../middleware/auth");
 const fileType = require("file-type");
+const { sendWelcomeEmail, sendByeEmail } = require("../emails/account");
 const router = new express.Router();
 
 router.post("/users", async (req, res) => {
@@ -14,6 +15,7 @@ router.post("/users", async (req, res) => {
     }
     const user = await new User(req.body);
     await user.save();
+    sendWelcomeEmail(user.email, user.name)
     const token = await user.generateAuthToken();
 
     res.status(201).send({ user, token });
@@ -73,6 +75,7 @@ router.patch("/users/me", auth, async (req, res) => {
 router.delete("/users/me", auth, async (req, res) => {
   try {
     await req.user.remove();
+    sendByeEmail(req.user.email, req.user.name)
     res.status(202).send(req.user);
   } catch (e) {
     res.status(500).send();
@@ -94,12 +97,10 @@ const upload = multer({
 router.post("/users/me/avatar", auth, upload.single("avatar"), async (req, res) => {
   try {
     // req.user.avatar = req.file.buffer;
-    await sharp(req.file.buffer)
+    req.user.avatar = await sharp(req.file.buffer)
       .resize({ height: 100 })
-      .toBuffer()
-      .then(data => {
-        req.user.avatar = data;
-      });
+      .png()
+      .toBuffer();
     await req.user.save();
     res.status(200).send();
   } catch (e) {
