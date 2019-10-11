@@ -33,12 +33,16 @@ io.on("connection", socket => {
     callback();
   });
   socket.on("sendMessage", (text, callback) => {
+    const user = getUser(socket.id);
     const filter = new Filter();
     if (filter.isProfane(text)) {
       return callback("Profanity is not allowed.");
     }
-    message = generateMessage(text);
-    io.to(getUser(socket.id).room).emit("message", message);
+    if (text.length === 0) {
+      return callback("Can't send empty messages");
+    }
+    message = generateMessage(user.username, text);
+    io.to(user.room).emit("message", message);
     callback();
   });
 
@@ -50,9 +54,10 @@ io.on("connection", socket => {
   });
 
   socket.on("sendLocation", (position, callback) => {
-    io.to(getUser(socket.id).room).emit(
+    const user = getUser(socket.id);
+    io.to(user.room).emit(
       "locationMessage",
-      generateLocationMessage(`https://google.com/maps?q=${position.latitude},${position.longitude}`)
+      generateLocationMessage(user.username, `https://google.com/maps?q=${position.latitude},${position.longitude}`)
     );
     callback();
   });
