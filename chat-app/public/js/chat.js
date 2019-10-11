@@ -7,15 +7,15 @@ socket.on("message", message => {
 });
 
 document.getElementById("chatSend").addEventListener("click", function() {
-  socket.emit("message", document.getElementById("chatSendText").value);
+  socket.emit("sendMessage", document.getElementById("chatSendText").value);
   document.getElementById("chatSendText").value = "";
 });
-
-// socket.on("countUpdated", (count) => {
-// console.log("The count has been updated! ", count)
-// })
-
-// document.querySelector("#increment").addEventListener("click", () => {
-// console.log("Clicked")
-// socket.emit("increment")
-// } )
+document.querySelector("#send-location").addEventListener("click", e => {
+  if (!navigator.geolocation) {
+    return alert("Geolocation not supported by your browser");
+  }
+  navigator.geolocation.getCurrentPosition(position => {
+    console.log(position)
+    socket.emit("sendLocation", position.coords.latitude, position.coords.longitude);
+  });
+});

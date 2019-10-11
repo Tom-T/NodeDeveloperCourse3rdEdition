@@ -17,11 +17,14 @@ let chatLog = [];
 io.on("connection", socket => {
   console.log("new websocket connection");
   socket.emit("message", "Welcome!");
+
+  socket.broadcast.emit("message", "A new user has joined!")
+
   chatLog.forEach(message => {
     socket.emit("message", message);
   });
 
-  socket.on("message", message => {
+  socket.on("sendMessage", message => {
     io.emit("message", message);
     chatLog.push(message);
     while (chatLog.length >= 4) {
@@ -29,12 +32,14 @@ io.on("connection", socket => {
     }
   });
 
-  // socket.emit("countUpdated", count)
-  // socket.on("increment", () => {
-  //   count++
-  //   //socket.emit("countUpdated", count) //sincle connection
-  //   io.emit("countUpdated", count); //every connection
-  // })
+  socket.on("disconnect", () =>{
+    io.emit("message", "A user has left")
+  })
+
+  socket.on("sendLocation", (lat, long) => {
+      io.emit("message", "Location: " + lat +"," + long);
+  });
+
 });
 
 server.listen(port);
