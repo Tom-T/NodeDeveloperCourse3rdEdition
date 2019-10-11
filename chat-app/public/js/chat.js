@@ -1,21 +1,43 @@
 const $locationButton = document.querySelector("#send-location");
-const $chatSendButton = document.getElementById("chatSend");
-const $chatText = document.getElementById("chatSendText");
-const $chatWindow = document.getElementById("chatText");
+const $chatSendButton = document.querySelector("#chatSend");
+const $chatText = document.querySelector("#chatSendText");
+const $chatWindow = document.querySelector("#chatText");
+
+const $messages = document.querySelector("#messages");
+
+// Templates
+const $messageTemplate = document.querySelector("#message-template").innerHTML;
+const $locationMessageTemplate = document.querySelector("#locationMessage-template").innerHTML;
 
 const socket = io();
 
+// socket.on("message", message => {
+//   let isScrolledToBottom = $chatWindow.scrollHeight - $chatWindow.clientHeight <= $chatWindow.scrollTop + 1;
+//   const p = document.createElement("p");
+//   p.innerText = message;
+//   $chatWindow.appendChild(p);
+//   if (isScrolledToBottom) {
+//     $chatWindow.scrollTop = $chatWindow.scrollHeight - $chatWindow.clientHeight;
+//   }
+// });
+
 socket.on("message", message => {
-  let isScrolledToBottom = $chatWindow.scrollHeight - $chatWindow.clientHeight <= $chatWindow.scrollTop + 1;
-  const p = document.createElement("p");
-  p.innerText = message;
-  $chatWindow.appendChild(p);
-  if (isScrolledToBottom) {
-    $chatWindow.scrollTop = $chatWindow.scrollHeight - $chatWindow.clientHeight;
-  }
+  const html = Mustache.render($messageTemplate, {
+    message
+  });
+  $messages.insertAdjacentHTML("beforeend", html)
+
+})
+
+socket.on("locationMessage", link => {
+  console.log("here" + link)
+  const html = Mustache.render($locationMessageTemplate, {
+    link
+  });
+  $messages.insertAdjacentHTML("beforeend", html);
 });
 
-$chatSendButton.addEventListener("click", function() {
+$chatSendButton.addEventListener("click", () => {
   $chatSendButton.setAttribute("disabled", "disabled");
   socket.emit("sendMessage", $chatText.value, error => {
     $chatSendButton.removeAttribute("disabled");
