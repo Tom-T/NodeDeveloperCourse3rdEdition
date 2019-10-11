@@ -8,22 +8,35 @@ const $messages = document.querySelector("#messages");
 // Templates
 const $messageTemplate = document.querySelector("#message-template").innerHTML;
 const $locationMessageTemplate = document.querySelector("#locationMessage-template").innerHTML;
-const $sidebarTemplate = document.querySelector("#sidebar-template").innerHTML
+const $sidebarTemplate = document.querySelector("#sidebar-template").innerHTML;
 
 //Options
 const { username, room } = Qs.parse(location.search, { ignoreQueryPrefix: true });
 
-const socket = io();
+const autoscroll = () => {
+  // New message element
+  const $newMessage = $messages.lastElementChild;
 
-// socket.on("message", message => {
-//   let isScrolledToBottom = $chatWindow.scrollHeight - $chatWindow.clientHeight <= $chatWindow.scrollTop + 1;
-//   const p = document.createElement("p");
-//   p.innerText = message;
-//   $chatWindow.appendChild(p);
-//   if (isScrolledToBottom) {
-//     $chatWindow.scrollTop = $chatWindow.scrollHeight - $chatWindow.clientHeight;
-//   }
-// });
+  // Height of the new message
+  const newMessageStyles = getComputedStyle($newMessage);
+  const newMessageMargin = parseInt(newMessageStyles.marginBottom);
+  const newMessageHeight = $newMessage.offsetHeight + newMessageMargin;
+
+  // Visible height
+  const visibleHeight = $messages.offsetHeight;
+
+  // Height of messages container
+  const containerHeight = $messages.scrollHeight;
+
+  // How far have I scrolled?
+  const scrollOffset = $messages.scrollTop + visibleHeight;
+
+  if (containerHeight - newMessageHeight <= scrollOffset) {
+    $messages.scrollTop = $messages.scrollHeight;
+  }
+};
+
+const socket = io();
 
 socket.on("message", message => {
   const html = Mustache.render($messageTemplate, {
@@ -32,16 +45,17 @@ socket.on("message", message => {
     createdAt: moment(message.createdAt).format("h:mm a")
   });
   $messages.insertAdjacentHTML("beforeend", html);
+  autoscroll();
 });
 
-socket.on("roomData", ({ room, users}) => {
+socket.on("roomData", ({ room, users }) => {
   const html = Mustache.render($sidebarTemplate, {
-    room, users
-
-  })
-  document.querySelector("#sidebar").innerHTML = html
-})
-
+    room,
+    users
+  });
+  document.querySelector("#sidebar").innerHTML = html;
+  autoscroll();
+});
 
 socket.on("locationMessage", message => {
   const html = Mustache.render($locationMessageTemplate, {
@@ -50,6 +64,7 @@ socket.on("locationMessage", message => {
     createdAt: moment(message.createdAt).format("h:mm a")
   });
   $messages.insertAdjacentHTML("beforeend", html);
+  autoscroll();
 });
 
 $chatSendButton.addEventListener("click", () => {
