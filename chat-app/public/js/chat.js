@@ -7,15 +7,22 @@ socket.on("message", message => {
 });
 
 document.getElementById("chatSend").addEventListener("click", function() {
-  socket.emit("sendMessage", document.getElementById("chatSendText").value);
-  document.getElementById("chatSendText").value = "";
+  socket.emit("sendMessage", document.getElementById("chatSendText").value, error => {
+    if (error) {
+      return alert(error);
+    }
+    document.getElementById("chatSendText").value = "";
+  });
 });
+
 document.querySelector("#send-location").addEventListener("click", e => {
   if (!navigator.geolocation) {
     return alert("Geolocation not supported by your browser");
   }
   navigator.geolocation.getCurrentPosition(position => {
-    console.log(position)
-    socket.emit("sendLocation", position.coords.latitude, position.coords.longitude);
+    socket.emit("sendLocation", { latitude: position.coords.latitude, longitude: position.coords.longitude }, () =>{
+      alert("Location shared!")
+
+    });
   });
 });
