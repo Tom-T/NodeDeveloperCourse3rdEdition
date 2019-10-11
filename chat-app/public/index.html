@@ -1,10 +1,17 @@
 <!DOCTYPE html>
 <html>
-  <head></head>
-  <body>
-    <h1>Chat App</h1>
-    <button id="increment">Add One</button>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
-  </body>
+
+<head></head>
+
+<body>
+  <h1>Chat App</h1>
+  <div id="chatText"></div>
+  <form id="chatInput">
+    <input id="chatSendText" type="text" placeholder="Chat with everybody."></input>
+    <button id="chatSend" type="button">Send!</button>
+  </form>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/chat.js"></script>
+</body>
+
 </html>
