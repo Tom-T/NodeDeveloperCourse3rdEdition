@@ -65,4 +65,6 @@ $locationButton.addEventListener("click", e => {
   });
 });
 
-socket.emit("join", { username, room });
+socket.emit("join", { username, room }, (error) => {
+if (error) alert(error)
+});
