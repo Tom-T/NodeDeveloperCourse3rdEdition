@@ -20,6 +20,7 @@ $chatSendButton.addEventListener("click", function() {
   socket.emit("sendMessage", $chatText.value, error => {
     $chatSendButton.removeAttribute("disabled");
     $chatText.value = "";
+    $chatText.focus();
     if (error) {
       return alert(error);
     }
