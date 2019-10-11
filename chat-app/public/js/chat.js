@@ -4,11 +4,15 @@ const $chatText = document.getElementById("chatSendText");
 const $chatWindow = document.getElementById("chatText");
 
 const socket = io();
+
 socket.on("message", message => {
-  console.log(message);
+  let isScrolledToBottom = $chatWindow.scrollHeight - $chatWindow.clientHeight <= $chatWindow.scrollTop + 1;
   const p = document.createElement("p");
   p.innerText = message;
   $chatWindow.appendChild(p);
+  if (isScrolledToBottom) {
+    $chatWindow.scrollTop = $chatWindow.scrollHeight - $chatWindow.clientHeight;
+  }
 });
 
 $chatSendButton.addEventListener("click", function() {
