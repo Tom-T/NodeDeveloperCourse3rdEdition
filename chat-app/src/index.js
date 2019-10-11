@@ -27,9 +27,9 @@ io.on("connection", socket => {
       return callback(error);
     }
     socket.join(user.room);
-    socket.emit("message", generateMessage("Welcome!"));
+    socket.emit("message", generateMessage(user.room, "Welcome!"));
 
-    socket.broadcast.to(user.room).emit("message", generateMessage(user.username + " user has joined!"));
+    socket.broadcast.to(user.room).emit("message", generateMessage(user.room, user.username + " user has joined!"));
     callback();
   });
   socket.on("sendMessage", (text, callback) => {
@@ -49,7 +49,7 @@ io.on("connection", socket => {
   socket.on("disconnect", () => {
     const user = removeUser(socket.id);
     if (user) {
-      io.to(user.room).emit("message", generateMessage(user.username + " has left"));
+      io.to(user.room).emit("message", generateMessage(user.room, user.username + " has left"));
     }
   });
 

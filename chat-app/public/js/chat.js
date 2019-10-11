@@ -43,6 +43,9 @@ socket.on("locationMessage", message => {
 });
 
 $chatSendButton.addEventListener("click", () => {
+  if ($chatText.value === "") {
+    return;
+  }
   $chatSendButton.setAttribute("disabled", "disabled");
   socket.emit("sendMessage", $chatText.value, error => {
     $chatSendButton.removeAttribute("disabled");
