@@ -23,16 +23,17 @@ const socket = io();
 
 socket.on("message", message => {
   const html = Mustache.render($messageTemplate, {
-    message
+    message: message.text,
+    createdAt: moment(message.createdAt).format("h:mm a")
   });
   $messages.insertAdjacentHTML("beforeend", html)
 
 })
 
-socket.on("locationMessage", link => {
-  console.log("here" + link)
+socket.on("locationMessage", message => {
   const html = Mustache.render($locationMessageTemplate, {
-    link
+    link: message.url,
+    createdAt: moment(message.createdAt).format("h:mm a")
   });
   $messages.insertAdjacentHTML("beforeend", html);
 });
