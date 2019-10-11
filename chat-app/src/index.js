@@ -16,8 +16,6 @@ const publicDirectoryPath = path.join(__dirname, "../public");
 app.use(express.static(publicDirectoryPath));
 
 io.on("connection", socket => {
-  console.log("new websocket connection");
-
   socket.on("join", ({ username, room }, callback) => {
     const { error, user } = addUser({
       id: socket.id,
@@ -28,7 +26,6 @@ io.on("connection", socket => {
     if (error) {
       return callback(error);
     }
-    console.log(user)
     socket.join(user.room);
     socket.emit("message", generateMessage("Welcome!"));
 
@@ -41,8 +38,7 @@ io.on("connection", socket => {
       return callback("Profanity is not allowed.");
     }
     message = generateMessage(text);
-    io.to(user.room).emit("message", message);
-    chatLog.push(message);
+    io.to(getUser(socket.id).room).emit("message", message);
     callback();
   });
 
@@ -54,7 +50,7 @@ io.on("connection", socket => {
   });
 
   socket.on("sendLocation", (position, callback) => {
-    io.emit(
+    io.to(getUser(socket.id).room).emit(
       "locationMessage",
       generateLocationMessage(`https://google.com/maps?q=${position.latitude},${position.longitude}`)
     );
